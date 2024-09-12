@@ -1,0 +1,26 @@
+{
+  "hostname": "office-pc-04",
+  "collected_at": "2024-09-12T10:24:11+05:00",
+  "os": {
+    "name": "Ubuntu",
+    "version": "22.04",
+    "kernel": "6.5.0-21-generic",
+    "uptime_sec": 482915
+  },
+  "cpu": {
+    "model": "Intel Core i5-9400",
+    "cores_physical": 6,
+    "cores_logical": 6,
+    "freq_max_mhz": 4100
+  },
+  "memory": {
+    "total_mb": 16322,
+    "available_mb": 11240
+  },
+  "disks": [
+    {"device": "/dev/nvme0n1", "size_gb": 476, "fstype": "ext4", "mountpoint": "/"}
+  ],
+  "network": [
+    {"name": "eno1", "mac": "ac:1f:6b:11:22:33", "ipv4": "192.168.1.42", "mtu": 1500}
+  ]
+}
