@@ -1,59 +1,36 @@
 # pc-inventory
 
-Кросс-платформенная (Linux / Windows) утилита-инвентаризатор.
-Собирает «паспорт» машины: производитель, модель, процессор, память, диски,
-сетевые интерфейсы, версия ОС, аптайм. Сохраняет в JSON, может выгружать
-сводный CSV по нескольким машинам.
+Small CLI I put together while inventorying a couple of small offices and
+a PC club. Nobody wanted to pay for a real RMM, so this just walks one
+machine and dumps its specs to JSON. Run it on every box, drop the JSONs
+in one folder, then merge them into a CSV that a non-technical person
+(an accountant, in my case) can read.
 
-Когда работал в нескольких офисах и небольшой компьютерной сети, понадобилась
-быстрая инвентаризация без агентов и без подписки на платные сервисы. Это —
-оно. Запускается одной командой, складывает всё в `~/.pc-inventory/<host>.json`,
-и потом можно объединить отчёты в общий CSV для бухгалтерии или закупок.
+No agent, nothing persistent. Just `psutil` doing the heavy lifting and
+`distro` for nicer Linux names.
 
-## Возможности
+## Use
 
-- ОС: дистрибутив + версия, ядро, аптайм.
-- CPU: модель, число ядер/потоков, частота.
-- Память: total / available, тип (если доступно).
-- Диски: список устройств с маркой, размером, файловой системой.
-- Сеть: интерфейсы с MAC, IPv4, MTU.
-- Без рута — собирает всё, что доступно обычному пользователю.
-
-## Установка
-
-```bash
-git clone https://github.com/<user>/pc-inventory
-cd pc-inventory
+```
 python3 -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
+
+python3 -m pc_inventory collect                          (writes ~/.pc-inventory/<host>.json)
+python3 -m pc_inventory collect -o reports/lab1.json     (custom path)
+
+python3 -m pc_inventory merge reports/*.json -o inventory.csv
 ```
 
-## Запуск
+There's an `example_report.json` in the repo so you know roughly what
+the output looks like before running it.
 
-Снять отчёт с текущей машины:
+The merge step picks the first up-state network interface for the CSV
+summary — the accountant only cared about one IP/MAC per machine and
+having every Wi-Fi/Bluetooth/loopback in the table just made it noisy.
+If you need everything, the raw per-host JSON keeps it all.
 
-```bash
-python3 -m pc_inventory collect
-```
+Tested on Ubuntu, Debian, and Windows 10/11. macOS should work too but
+I haven't actually verified.
 
-По умолчанию пишет в `~/.pc-inventory/<hostname>.json`. Кастомный путь:
-
-```bash
-python3 -m pc_inventory collect --output ./reports/laptop1.json
-```
-
-Свести несколько JSON-отчётов в одну CSV-таблицу:
-
-```bash
-python3 -m pc_inventory merge ./reports/*.json --output ./inventory.csv
-```
-
-## Зависимости
-
-- `psutil` — основной источник информации о железе и сети.
-- `distro` — детекция дистрибутива на Linux.
-
-## Лицензия
-
-MIT.
+License: MIT.
